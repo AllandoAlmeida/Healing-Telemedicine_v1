@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from doctor.models import MedicalData, OpenDate, Specialties
+from doctor.models import MedicalData, OpenDate, Specialties, is_doctor
 from django.contrib.messages import constants
 from django.contrib import messages
 
@@ -30,7 +30,7 @@ def home(request):
             messages.add_message(request, constants.WARNING, 'Lamentamos! não foi possível localizar o médico pesquisado.')
             return redirect('/patient/home/')        
         
-        return render(request, 'home.html', {'doctors': doctors, 'specialties': specialties})
+        return render(request, 'home.html', {'doctors': doctors, 'specialties': specialties, 'is_doctor': is_doctor(request.user)})
     
 
 register = template.Library()
@@ -54,7 +54,7 @@ def select_times(request, id_medical_data):
     if request.method == "GET":
         doctor = MedicalData.objects.get(id=id_medical_data)
         available_dates = OpenDate.objects.filter(user=doctor.user).filter(date__gt=datetime.now()).filter(scheduled=False).order_by('date')
-        return render(request, 'select_times.html', {'doctor': doctor, 'available_dates': available_dates})
+        return render(request, 'select_times.html', {'doctor': doctor, 'available_dates': available_dates, 'is_doctor': is_doctor(request.user)})
  
    
 def schedule_time(request, open_date_id):
@@ -82,5 +82,13 @@ def my_queries(request):
     if request.method == "GET":
             queries_scheduled = Query.objects.filter(patient=request.user).filter(open_date__date__gte=datetime.now())
             print("my_querys", queries_scheduled)
-            return render(request, 'my_queries.html', {'queries_scheduled': queries_scheduled})
+            return render(request, 'my_queries.html', {'queries_scheduled': queries_scheduled, 'is_doctor': is_doctor(request.user)})
+        
+        
+def query(request, id_query):
+    if request.method == 'GET':
+        query = Query.objects.get(id=id_query)
+        medical_data = MedicalData.objects.get(user=query.open_date.user)
+        return render(request, 'query.html', {'query': query, 'medical_data': medical_data, 'is_doctor': is_doctor(request.user)})
+
          

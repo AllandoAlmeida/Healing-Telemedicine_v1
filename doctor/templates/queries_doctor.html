@@ -53,7 +53,7 @@
                 <tbody>
                     {% for query in queries_today  %}
                         <tr>
-                            <td><a href="">{{query.paciente}}</a></td>
+                            <td><a href="{% url "consultation_area_doctor" query.id %}">{{query.paciente}}</a></td>
                             <td>{{query.get_status_display}}</td>
                             <td>{{query.open_date.date}}</td>
                         </tr>
@@ -79,7 +79,7 @@
                 <tbody>
                     {% for query in remaining_queries  %}
                         <tr>
-                            <td><a href="">{{query.patient}}</a></td>
+                            <td><a href="{% url "consultation_area_doctor" query.id %}">{{query.patient}}</a></td>
                             <td>{{query.get_status_display}}</td>
                             <td>{{query.open_date.date}}</td>
                         </tr>

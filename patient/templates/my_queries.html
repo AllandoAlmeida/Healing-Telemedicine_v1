@@ -10,6 +10,7 @@
 />
 
 {% endblock 'head' %} {% block 'body' %}
+{% include "partials/navbar.html" %}
 
 <div class="container">
   <br />
@@ -53,7 +54,7 @@
       <tbody>
         {% for query_scheduled in queries_scheduled %}
         <tr>
-          <td><a href="#">Dr.(a) {{query_scheduled.open_date.user}}</a></td>
+          <td><a href="{% url 'query' query_scheduled.id %}">Dr.(a) {{query_scheduled.open_date.user}}</a></td>
           <td>{{query_scheduled.get_status_display}}</td>
           <td>{{query_scheduled.open_date.date}}</td>
         </tr>
