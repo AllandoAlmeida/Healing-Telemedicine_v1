@@ -1,0 +1,56 @@
+{% extends "base.html" %} {% load static %} {% block 'head' %}
+<link rel="stylesheet" href="{% static 'doctor/css/open_calendar.css' %}" />
+<link rel="stylesheet" href="{% static 'users/css/users.css' %}" />
+<link rel="stylesheet" href="{% static 'doctor/css/register_doctor.css' %}" />
+{% endblock 'head' %} {% block 'body' %}
+
+<div class="container">
+  <br /><br />
+
+  <div class="row">
+    <div class="col-md-8">
+      <img src="{{medical_data.photo.url}}" class="foto-perfil" alt="" />
+      <label style="margin-left: 30px; font-size: 25px" class="p-bold"
+        >Olá, <span class="color-dark">{{request.user.username}}</span></label
+      >
+
+      <br />
+      {% if messages %}
+      <br />
+      {% for message in messages %}
+      <section class="alert {{message.tags}}">{{message}}</section>
+      {% endfor %} {% endif %}
+      <br />
+      <p style="font-size: 25px" class="p-bold">
+        Abrir horários para consultas
+      </p>
+      <hr />
+      <form action="{% url 'open_calendar'%}" method="POST">
+        {% csrf_token %}
+        <label for="">Escolher data:</label>
+        <input
+          type="datetime-local"
+          name="date"
+          class="form-control shadow-main-color"
+        />
+        <br />
+        <input
+          type="submit"
+          value="Salvar"
+          class="btn btn-success btn-dark-color"
+        />
+      </form>
+    </div>
+    <div class="col-md-4">
+      <p style="font-size: 25px" class="p-bold">Seus horários:</p>
+      <ul class="list-group">
+        {% for open_appointment in open_appointments %}
+        <li>{{open_appointment}}</li>
+
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock 'body' %}

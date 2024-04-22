@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 def is_doctor(user):
     return MedicalData.objects.filter(user=user).exists()
@@ -31,6 +32,22 @@ class MedicalData(models.Model):
      def __str__(self):
          return self.user.username
      
+     @property
+     def next_date(self):
+         next_date = OpenDate.objects.filter(user=self.user).filter(date__gt=datetime.now()).filter(scheduled=False).order_by('date').first()
+         return next_date
+     
+     
+     
+class OpenDate(models.Model):
+     date = models.DateTimeField()
+     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+     scheduled = models.BooleanField(default=False)
+
+     def __str__(self):
+         return str(self.date)
+  
+   
 
 """ 
      class Especialidades(models.Model):
